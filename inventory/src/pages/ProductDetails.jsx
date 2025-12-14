@@ -16,7 +16,7 @@ export default function ProductDetails() {
   const { id } = useParams()
 
   const API_BASE_URL = useMemo(() => {
-    return import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+    return import.meta.env.VITE_API_BASE_URL
   }, [])
 
   const [summaryLoading, setSummaryLoading] = useState(true)
@@ -110,179 +110,154 @@ export default function ProductDetails() {
   const totalDecreased = summary?.totalDecreased
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900">
+    <div className="min-h-screen bg-white text-slate-900">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-6 sm:py-8">
         <button
           type="button"
           onClick={() => navigate('/')}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900"
         >
           <span className="text-lg leading-none">←</span>
           <span>Back to Dashboard</span>
         </button>
 
         {summaryLoading ? (
-          <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <div className="h-3 w-3 rounded-full bg-slate-400 animate-bounce"></div>
-            <span className="text-sm text-slate-500">Loading product details…</span>
-          </div>
+          <div className="mt-6 text-sm text-slate-500">Loading…</div>
         ) : product ? (
           <>
-            <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">{product.name}</h1>
-              <div className="mt-4 flex flex-wrap items-center gap-4 sm:gap-8 text-sm sm:text-base">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                  <span className="text-slate-500 font-medium">SKU:</span>
-                  <span className="font-mono font-semibold text-slate-900 bg-slate-100 px-3 py-1 rounded-lg">{product.sku}</span>
+            <div className="mt-4">
+              <h1 className="text-2xl sm:text-3xl font-semibold">{product.name}</h1>
+              <div className="mt-3 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-sm text-slate-700">
+                <div>
+                  <span className="text-slate-500">SKU:</span> <span className="font-medium">{product.sku}</span>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                  <span className="text-slate-500 font-medium">Current Stock:</span>
-                  <span className={`px-4 py-2 rounded-lg font-bold ${currentStock === 0 ? 'bg-red-100 text-red-700' : currentStock < 10 ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
-                    {currentStock} units
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-500">Current Stock:</span>
+                  <span className="rounded-md bg-slate-100 px-3 py-1 font-medium text-slate-900">
+                    {currentStock}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-8">
-              <h2 className="text-xl font-bold text-slate-900 mb-4">Stock Adjustment</h2>
+            <div className="mt-8 sm:mt-10">
+              <div className="text-sm font-semibold text-slate-900">Stock Adjustment</div>
 
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="rounded-xl border-2 border-green-200 bg-white p-6 shadow-lg hover:shadow-xl transition-shadow">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-2xl">📈</span>
-                    <span className="text-lg font-bold text-green-700">Increase Stock</span>
+              <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                    <span>Increase Stock</span>
                   </div>
-                  <form onSubmit={submitIncrease} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-2">Quantity to Add</label>
-                      <input
-                        type="number"
-                        min="1"
-                        value={incQty}
-                        onChange={(e) => setIncQty(e.target.value)}
-                        className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:ring-opacity-20 transition-all"
-                        placeholder="Enter quantity"
-                        required
-                      />
-                    </div>
+                  <form onSubmit={submitIncrease} className="mt-4">
+                    <label className="block text-sm text-slate-700">Quantity</label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={incQty}
+                      onChange={(e) => setIncQty(e.target.value)}
+                      className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-900"
+                      placeholder="Enter quantity"
+                      required
+                    />
                     <button
                       type="submit"
                       disabled={incSubmitting || !incQty}
-                      className="w-full rounded-lg bg-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed enabled:hover:bg-green-500 enabled:hover:text-white transition-all duration-200"
+                      className="mt-4 w-full rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium text-slate-600 disabled:opacity-60 enabled:hover:bg-green-500 enabled:hover:text-white transition-colors"
                     >
-                      {incSubmitting ? '⏳ Increasing…' : '✓ Increase Stock'}
+                      {incSubmitting ? 'Increasing…' : 'Increase Stock'}
                     </button>
                   </form>
                 </div>
 
-                <div className="rounded-xl border-2 border-red-200 bg-white p-6 shadow-lg hover:shadow-xl transition-shadow">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-2xl">📉</span>
-                    <span className="text-lg font-bold text-red-700">Decrease Stock</span>
+                <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                    <span>Decrease Stock</span>
                   </div>
-                  <form onSubmit={submitDecrease} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-2">Quantity to Remove</label>
-                      <input
-                        type="number"
-                        min="1"
-                        value={decQty}
-                        onChange={(e) => setDecQty(e.target.value)}
-                        className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:ring-opacity-20 transition-all"
-                        placeholder="Enter quantity"
-                        required
-                      />
-                    </div>
+                  <form onSubmit={submitDecrease} className="mt-4">
+                    <label className="block text-sm text-slate-700">Quantity</label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={decQty}
+                      onChange={(e) => setDecQty(e.target.value)}
+                      className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-900"
+                      placeholder="Enter quantity"
+                      required
+                    />
                     <button
                       type="submit"
                       disabled={decSubmitting || !decQty}
-                      className="w-full rounded-lg bg-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed enabled:hover:bg-red-500 enabled:hover:text-white transition-all duration-200"
+                      className="mt-4 w-full rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium text-slate-600 disabled:opacity-60 enabled:hover:bg-red-500 enabled:hover:text-white transition-colors"
                     >
-                      {decSubmitting ? '⏳ Decreasing…' : '✗ Decrease Stock'}
+                      {decSubmitting ? 'Decreasing…' : 'Decrease Stock'}
                     </button>
                   </form>
                 </div>
               </div>
             </div>
 
-            <div className="mt-8">
-              <h2 className="text-xl font-bold text-slate-900 mb-4">Stock Summary</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-lg">
-                  <div className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Current Stock</div>
-                  <div className="mt-3 flex items-baseline gap-2">
-                    <div className="text-3xl font-bold text-slate-900">{currentStock}</div>
-                    <div className="text-sm text-slate-500">units</div>
-                  </div>
+            <div className="mt-8 sm:mt-10">
+              <div className="text-lg sm:text-xl font-semibold">Stock Summary</div>
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-3">
+                <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6">
+                  <div className="text-sm text-slate-600">Current Stock</div>
+                  <div className="mt-2 text-lg font-semibold text-slate-900">{currentStock}</div>
                 </div>
-                <div className="rounded-xl border border-green-200 bg-green-50 p-6 shadow-lg">
-                  <div className="text-xs font-semibold text-green-600 uppercase tracking-wider">Total Increased</div>
-                  <div className="mt-3 flex items-baseline gap-2">
-                    <div className="text-3xl font-bold text-green-700">+{totalIncreased}</div>
-                    <div className="text-sm text-green-600">units</div>
-                  </div>
+                <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6">
+                  <div className="text-sm text-slate-600">Total Increased</div>
+                  <div className="mt-2 text-lg font-semibold text-green-700">{totalIncreased}</div>
                 </div>
-                <div className="rounded-xl border border-red-200 bg-red-50 p-6 shadow-lg">
-                  <div className="text-xs font-semibold text-red-600 uppercase tracking-wider">Total Decreased</div>
-                  <div className="mt-3 flex items-baseline gap-2">
-                    <div className="text-3xl font-bold text-red-700">-{totalDecreased}</div>
-                    <div className="text-sm text-red-600">units</div>
-                  </div>
+                <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6">
+                  <div className="text-sm text-slate-600">Total Decreased</div>
+                  <div className="mt-2 text-lg font-semibold text-red-700">{totalDecreased}</div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-8">
-              <h2 className="text-xl font-bold text-slate-900 mb-4">Transaction History</h2>
+            <div className="mt-8 sm:mt-10">
+              <div className="text-sm font-semibold text-slate-900">Transaction History</div>
 
-              <div className="rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden">
+              <div className="mt-4 rounded-xl border border-slate-200 bg-white overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse text-left text-sm">
-                    <thead className="bg-gradient-to-r from-slate-900 to-slate-800 text-white sticky top-0">
+                    <thead className="bg-slate-50 text-slate-700">
                       <tr>
-                        <th className="px-4 sm:px-6 py-3 sm:py-4 font-semibold text-left">Type</th>
-                        <th className="px-4 sm:px-6 py-3 sm:py-4 font-semibold text-left">Quantity</th>
-                        <th className="px-4 sm:px-6 py-3 sm:py-4 font-semibold text-left">Date & Time</th>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 font-semibold">Transaction Type</th>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 font-semibold">Quantity</th>
+                        <th className="px-4 sm:px-6 py-3 sm:py-4 font-semibold">Timestamp</th>
                       </tr>
                     </thead>
                     <tbody>
                       {txLoading ? (
                         <tr>
-                          <td className="px-4 sm:px-6 py-6 text-slate-500 text-center" colSpan={3}>
-                            <div className="flex items-center justify-center gap-2">
-                              <div className="h-2 w-2 rounded-full bg-slate-400 animate-bounce"></div>
-                              <span>Loading transactions…</span>
-                            </div>
+                          <td className="px-4 sm:px-6 py-6 text-slate-500" colSpan={3}>
+                            Loading…
                           </td>
                         </tr>
                       ) : transactions.length === 0 ? (
                         <tr>
-                          <td className="px-4 sm:px-6 py-8 text-slate-500 text-center" colSpan={3}>
-                            <span>No transactions yet</span>
+                          <td className="px-4 sm:px-6 py-6 text-slate-500" colSpan={3}>
+                            No transactions.
                           </td>
                         </tr>
                       ) : (
                         transactions.map((t) => (
-                          <tr key={t._id} className="border-t border-slate-200 hover:bg-slate-50 transition-colors">
-                            <td className="px-4 sm:px-6 py-4">
+                          <tr key={t._id} className="border-t border-slate-200">
+                            <td className="px-4 sm:px-6 py-5">
                               <span
-                                className={`inline-flex items-center gap-1 rounded-md px-3 py-1 text-xs font-semibold ${
+                                className={
                                   t.type === 'INCREASE'
-                                    ? 'bg-green-100 text-green-700'
-                                    : 'bg-red-100 text-red-700'
-                                }`}
+                                    ? 'inline-flex items-center rounded-md bg-green-50 px-3 py-1 text-xs font-semibold text-green-700'
+                                    : 'inline-flex items-center rounded-md bg-red-50 px-3 py-1 text-xs font-semibold text-red-700'
+                                }
                               >
-                                <span>{t.type === 'INCREASE' ? '📈' : '📉'}</span>
                                 {t.type}
                               </span>
                             </td>
-                            <td className="px-4 sm:px-6 py-4 font-bold text-slate-900">
-                              <span className={t.type === 'INCREASE' ? 'text-green-600' : 'text-red-600'}>
-                                {t.type === 'INCREASE' ? `+${t.quantity}` : `-${t.quantity}`}
-                              </span>
+                            <td className="px-4 sm:px-6 py-5 font-medium text-slate-900">
+                              {t.type === 'INCREASE' ? `+${t.quantity}` : `-${t.quantity}`}
                             </td>
-                            <td className="px-4 sm:px-6 py-4 text-slate-700 text-xs sm:text-sm">{formatTimestamp(t.timestamp)}</td>
+                            <td className="px-4 sm:px-6 py-5 text-slate-700 text-xs sm:text-sm">{formatTimestamp(t.timestamp)}</td>
                           </tr>
                         ))
                       )}
@@ -291,31 +266,14 @@ export default function ProductDetails() {
                 </div>
               </div>
 
-              {txError ? (
-                <div className="mt-4 rounded-lg bg-red-50 border border-red-200 p-4">
-                  <div className="flex gap-3">
-                    <span className="text-red-600">⚠️</span>
-                    <div className="text-sm text-red-700">{txError}</div>
-                  </div>
-                </div>
-              ) : null}
+              {txError ? <div className="mt-3 text-sm text-red-600">{txError}</div> : null}
             </div>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <span className="text-2xl">❌</span>
-            <span className="text-sm text-slate-500">Product not found</span>
-          </div>
+          <div className="mt-6 text-sm text-slate-500">No details available.</div>
         )}
 
-        {summaryError ? (
-          <div className="mt-6 rounded-lg bg-red-50 border border-red-200 p-4">
-            <div className="flex gap-3">
-              <span className="text-red-600 text-lg">⚠️</span>
-              <div className="text-sm text-red-700">{summaryError}</div>
-            </div>
-          </div>
-        ) : null}
+        {summaryError ? <div className="mt-4 text-sm text-red-600">{summaryError}</div> : null}
       </div>
     </div>
   )
